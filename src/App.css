@@ -1,0 +1,182 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-user-select: none;
+  -webkit-appearance: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+       url(../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
+       url(../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+ font-family: 'Material Icons';
+ font-weight: normal;
+ font-style: normal;
+ font-size: 24px;  /* Preferred icon size */
+ display: inline-block;
+ line-height: 1;
+ text-transform: none;
+ letter-spacing: normal;
+ word-wrap: normal;
+ white-space: nowrap;
+ direction: ltr;
+
+ /* Support for all WebKit browsers. */
+ -webkit-font-smoothing: antialiased;
+ /* Support for Safari and Chrome. */
+ text-rendering: optimizeLegibility;
+
+ /* Support for Firefox. */
+ -moz-osx-font-smoothing: grayscale;
+
+ /* Support for IE. */
+ font-feature-settings: 'liga';
+}
+
+.hidden {
+  display: none !important;
+}
+
+html, body {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+
+html {
+  background: black;
+}
+
+body {
+  z-index: -50;
+  background: black;
+}
+
+.App {
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: black;
+  position: fixed;
+}
+
+.Loading {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color:#aaaaaa;
+}
+
+.Loading h4 {
+  text-transform: uppercase;
+  margin-top: -1rem;
+}
+
+.nav-bar {
+  transform: translate3d(0,0,0);
+  height: 8vh;
+  min-height: 8vh;
+  width: 100vw;
+  list-style-type: none;
+  background: rgba(22, 22, 22, 0.4);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.nav-bar li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.nav-link {
+  text-decoration: none;
+  text-transform: capitalize;
+  outline: none;
+  font-weight: 500;
+  color: rgb(70, 70, 70);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.nav-link.is-active {
+  color: white;
+}
+
+.tab {
+  width: 100%;
+}
+
+.tab-header {
+  color: white;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-left: 1rem;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.7rem;
+  text-transform: capitalize;
+}
+
+.tab-upper-header {
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 1rem;
+  margin-top: 3.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@media(min-height: 812px) {
+  .nav-bar{
+    height: 13vh;
+  }
+  .nav-bar li {
+    padding-top: 3vh;
+    justify-content: flex-start;
+  }
+}

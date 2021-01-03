@@ -1,0 +1,135 @@
+.ModalPrompt {
+  position: absolute;
+  top: 0;
+  z-index: 100000000;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.container-modalprompt {
+  background: #181818;
+  color: white;
+  width: 70vw;
+  border-radius: 15px;
+}
+
+.container-modalprompt h3 {
+  text-align: center;
+  margin: 1rem 1rem 0.5rem 1rem;
+}
+
+.container-modalprompt input {
+  -webkit-user-select: auto !important;
+  outline: none;
+  background-color: inherit;
+  border: none;
+  border-radius: 0;
+  font-size: 1.1rem;
+  color: white;
+  width: calc(100% - 2rem - 10px);
+  border-radius: 6px;
+  margin: 0 1rem 1rem 1rem;
+  padding: 5px 5px 5px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.container-modalprompt input::placeholder {
+  color: #333;
+}
+
+.buttons-modalprompt {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.buttons-modalprompt button {
+  border: none;
+  outline: none;
+  background: none;
+  -webkit-appearance: none;
+  font-size: 0.9rem;
+  width: 50%;
+  text-transform: uppercase;
+  color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.9rem;
+}
+
+.primary-modalprompt {
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom-right-radius: 12px;
+  font-weight: 600;
+}
+
+.secondary-modalprompt {
+  border-bottom-left-radius: 12px;
+}
+
+.buttons-modalprompt button:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.visible-modalprompt-container {
+  animation: scale-in-center 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-in-center {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hidden-animation-modalprompt-container {
+  animation: scale-out-center 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-out-center {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+}
+
+.visible-modalprompt {
+  animation: fade-in 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.hidden-animation-modalprompt {
+  animation: fade-out 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    z-index: 210;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}

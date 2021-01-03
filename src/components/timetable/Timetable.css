@@ -1,0 +1,17 @@
+.timetable-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(0,0,0,0.4);
+    width: 100%;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);   
+}
+
+.timetable-header-group {
+    margin-left: 1rem;
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 700;
+}

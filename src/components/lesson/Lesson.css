@@ -1,0 +1,107 @@
+:root {
+    --lk-color: #67A2D2;
+    --pz-color: #F2DD79;
+    --lc-color: #BF4E63;
+}
+
+.Lesson {
+    width: 85vw;
+    padding: 0 0 0 0.4rem;
+    background: black;
+    margin-top: 1rem;
+    border-radius: 4px;
+    position: relative;
+}
+
+.lesson-inner {
+    padding-left: 0.8rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-subject {
+    font-weight: 700;
+    font-size:2.5rem;
+}
+
+.lesson-fio {
+    margin-bottom: 3px;
+}
+
+.lesson-time {
+    margin-bottom: 0.2rem;
+}
+
+.lesson-subject {
+    margin-bottom: 0.2rem;
+}
+
+.lesson-time, .lesson-auditory, .lesson-fio {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.lesson-auditory {
+    position: absolute;
+    top: 0;
+    right: 0;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    margin-right: 0.8rem;
+}
+
+.lesson-time span, .lesson-auditory span, .lesson-fio span {
+    font-size: 1rem;
+    margin-right: .2rem;
+}
+
+.lesson-not-active {
+    background: #555 !important;
+    color: #555 !important;
+}
+
+.lesson-group {
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 4px;
+    background: inherit;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    position: absolute;
+    bottom:0;
+    right: 0;
+}
+
+.lesson-group h4 {
+    background: black;
+    border-top-left-radius: 13px;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.lk {
+    background: var(--lk-color);
+    color: var(--lk-color);
+}
+
+.pz {
+    background: var(--pz-color);
+    color: var(--pz-color);
+}
+
+.lc {
+    background: var(--lc-color); 
+    color: var(--lc-color);
+}

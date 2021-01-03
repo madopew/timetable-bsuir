@@ -1,0 +1,72 @@
+.Toast {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-container {
+  width: 45vw;
+  height: 45vw;
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000000;
+}
+
+.toast-container h2 {
+  font-weight: 600;
+}
+
+#tick {
+  width: 20vw;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.tick {
+  stroke: #888;
+}
+
+.visible-toast {
+  animation: scale-in-center-toast 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+}
+
+@keyframes scale-in-center-toast {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hidden-animation-toast {
+  animation: scale-out-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-out-center {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.7);
+    opacity: 0;
+    z-index: -1;
+  }
+}
