@@ -122,12 +122,14 @@ class Timetable extends React.Component {
             }),
           }
         )
-        .then(res => {
+        .then((res) => {
           let dates = res.data.lastUpdateDate.split(".");
-          let lastUpdateDate = Date.parse(dates[1] + "/" + dates[0] + "/" + dates[2]);
+          let lastUpdateDate = Date.parse(
+            dates[1] + "/" + dates[0] + "/" + dates[2]
+          );
           if (lastUpdateDate > this.state.lastUpdateDate) {
             console.log("Updating timetable");
-            this.setState({timetable: null});
+            this.setState({ timetable: null });
             this.updateTimetable();
           }
         });
@@ -136,104 +138,106 @@ class Timetable extends React.Component {
 
   updateTimetable = () => {
     let timetable = {};
-      let currentWeek;
-      this.setState({ loadingVisible: true });
-      console.log("Fetching timetable");
-      axios
-        .get(
-          "https://journal.bsuir.by/api/v1/studentGroup/schedule?studentGroup=" +
-            this.state.group,
-          {
-            cancelToken: new CancelToken(function executor(c) {
-              cancel = c;
-            }),
-          }
-        )
-        .then((res) => {
-          if (res.data === "") {
-            console.log("Error on fetching timetable: Wrong group");
-            this.setState({
-              modalVisible: true,
-              modalHeader: "Похоже такой группы не существует.",
-              modalText: "",
-              modalCancellable: false,
-              modalHasSecond: false,
-              modalFirstText: "Отмена",
-              loadingVisible: false,
-            });
-            let groups = JSON.parse(localStorage.getItem("savedGroups"));
-            groups = groups.filter((value) => value !== this.state.group);
-            localStorage.setItem("savedGroups", JSON.stringify(groups));
-            return;
-          }
-          if (res.data.schedules.length === 0) {
-            console.log("Error on fetching timetable: No data");
-            this.setState({
-              modalVisible: true,
-              modalHeader: "Невозможно загрузить расписание на данный момент, сервер не отвечает.",
-              modalText: "",
-              modalCancellable: false,
-              modalHasSecond: false,
-              modalFirstText: "Отмена",
-              loadingVisible: false,
-            });
-            return;
-          }
-          let schedules = res.data.schedules;
-          currentWeek = res.data.currentWeekNumber - 1;
-          for (let day = 0; day < schedules.length; day++) {
-            let daySchedule = schedules[day].schedule;
-            for (let lesson = 0; lesson < daySchedule.length; lesson++) {
-              let weekNums = daySchedule[lesson].weekNumber;
-              for (let week = 0; week < weekNums.length; week++) {
-                if (weekNums[week] === 0) continue;
-                if (timetable[weekNums[week] - 1] === undefined)
-                  timetable[weekNums[week] - 1] = [];
-                if (timetable[weekNums[week] - 1][day] === undefined)
-                  timetable[weekNums[week] - 1][day] = {};
-                if (timetable[weekNums[week] - 1][day].weekDay === undefined)
-                  timetable[weekNums[week] - 1][day].weekDay =
-                    schedules[day].weekDay;
-                if (timetable[weekNums[week] - 1][day].lessons === undefined)
-                  timetable[weekNums[week] - 1][day].lessons = [];
-                timetable[weekNums[week] - 1][day].lessons.push(
-                  daySchedule[lesson]
-                );
-              }
+    let currentWeek;
+    this.setState({ loadingVisible: true });
+    console.log("Fetching timetable");
+    axios
+      .get(
+        "https://journal.bsuir.by/api/v1/studentGroup/schedule?studentGroup=" +
+          this.state.group,
+        {
+          cancelToken: new CancelToken(function executor(c) {
+            cancel = c;
+          }),
+        }
+      )
+      .then((res) => {
+        if (res.data === "") {
+          console.log("Error on fetching timetable: Wrong group");
+          this.setState({
+            modalVisible: true,
+            modalHeader: "Похоже такой группы не существует.",
+            modalText: "",
+            modalCancellable: false,
+            modalHasSecond: false,
+            modalFirstText: "Отмена",
+            loadingVisible: false,
+          });
+          let groups = JSON.parse(localStorage.getItem("savedGroups"));
+          groups = groups.filter((value) => value !== this.state.group);
+          localStorage.setItem("savedGroups", JSON.stringify(groups));
+          return;
+        }
+        if (res.data.schedules.length === 0) {
+          console.log("Error on fetching timetable: No data");
+          this.setState({
+            modalVisible: true,
+            modalHeader:
+              "Невозможно загрузить расписание на данный момент, сервер не отвечает.",
+            modalText: "",
+            modalCancellable: false,
+            modalHasSecond: false,
+            modalFirstText: "Отмена",
+            loadingVisible: false,
+          });
+          return;
+        }
+        let schedules = res.data.schedules;
+        localStorage.setItem("exams", JSON.stringify(res.data.examSchedules));
+        currentWeek = res.data.currentWeekNumber - 1;
+        for (let day = 0; day < schedules.length; day++) {
+          let daySchedule = schedules[day].schedule;
+          for (let lesson = 0; lesson < daySchedule.length; lesson++) {
+            let weekNums = daySchedule[lesson].weekNumber;
+            for (let week = 0; week < weekNums.length; week++) {
+              if (weekNums[week] === 0) continue;
+              if (timetable[weekNums[week] - 1] === undefined)
+                timetable[weekNums[week] - 1] = [];
+              if (timetable[weekNums[week] - 1][day] === undefined)
+                timetable[weekNums[week] - 1][day] = {};
+              if (timetable[weekNums[week] - 1][day].weekDay === undefined)
+                timetable[weekNums[week] - 1][day].weekDay =
+                  schedules[day].weekDay;
+              if (timetable[weekNums[week] - 1][day].lessons === undefined)
+                timetable[weekNums[week] - 1][day].lessons = [];
+              timetable[weekNums[week] - 1][day].lessons.push(
+                daySchedule[lesson]
+              );
             }
           }
-          console.log("Timetable fetched successfully");
-          let lastUpdateDate = new Date();
-          lastUpdateDate.setHours(0, 0, 0, 0);
-          this.setState({
-            timetable,
-            currentWeek,
-            displayedWeek: currentWeek,
-            nextWeek: currentWeek,
-            loadingVisible: false,
-            lastUpdateDate
-          });
-          localStorage.setItem("timetable", JSON.stringify(timetable));
-          localStorage.setItem("currentWeek", currentWeek);
-          localStorage.setItem("nextWeek", currentWeek);
-          localStorage.setItem("lastUpdateDate", lastUpdateDate);
-        })
-        .catch((err) => {
-          console.log("Error on fetching timetable:");
-          console.log(err);
-          if (!axios.isCancel(err)) {
-            this.setState({
-              modalVisible: true,
-              modalHeader: "Внимание!",
-              modalCancellable: false,
-              modalText: "При загрузке расписания произошла ошибка.",
-              modalYesText: "Ок",
-              modalNoText: "Update",
-              loadingVisible: false,
-            });
-          }
+        }
+        console.log("Timetable fetched successfully");
+        let lastUpdateDate = new Date();
+        lastUpdateDate.setHours(0, 0, 0, 0);
+        this.setState({
+          timetable,
+          currentWeek,
+          displayedWeek: currentWeek,
+          nextWeek: currentWeek,
+          loadingVisible: false,
+          lastUpdateDate,
         });
-  }
+        localStorage.setItem("timetable", JSON.stringify(timetable));
+        localStorage.setItem("currentWeek", currentWeek);
+        localStorage.setItem("nextWeek", currentWeek);
+        localStorage.setItem("lastUpdateDate", lastUpdateDate);
+      })
+      .catch((err) => {
+        console.log("Error on fetching timetable:");
+        console.log(err);
+        if (!axios.isCancel(err)) {
+          this.setState({
+            modalVisible: true,
+            modalHeader: "Внимание!",
+            modalCancellable: false,
+            modalText: "При загрузке расписания произошла ошибка.",
+            modalYesText: "Ок",
+            modalNoText: "Update",
+            loadingVisible: false,
+          });
+        }
+      });
+  };
 
   slideRenderer = (params) => {
     const { index, key } = params;
@@ -270,25 +274,34 @@ class Timetable extends React.Component {
             alignItems: "center",
             width: "100%",
             height: "65vh",
-            color: "#777777"
+            color: "#777777",
           }}
         >
           <h1
             style={{
-              marginBottom: ".2rem"
-            }}>Пар нет</h1>
-          <i className="material-icons"
+              marginBottom: ".2rem",
+            }}
+          >
+            Пар нет
+          </h1>
+          <i
+            className="material-icons"
             style={{
-              fontSize: "2rem"
-            }}>not_interested</i>
+              fontSize: "2rem",
+            }}
+          >
+            not_interested
+          </i>
         </div>
       );
     else {
       for (let i = 0; i < this.state.timetable[week][day].lessons.length; i++) {
-        let hours = this.state.timetable[week][day].lessons[i]
-          .endLessonTime.split(":")[0];
-        let minutes = this.state.timetable[week][day].lessons[i]
-          .endLessonTime.split(":")[1];
+        let hours = this.state.timetable[week][day].lessons[
+          i
+        ].endLessonTime.split(":")[0];
+        let minutes = this.state.timetable[week][day].lessons[
+          i
+        ].endLessonTime.split(":")[1];
         let timeOfLesson = new Date();
         timeOfLesson.setHours(hours, minutes, 0);
         let type =
@@ -365,21 +378,13 @@ class Timetable extends React.Component {
         />
         <div className="timetable-header">
           <h5 className="tab-upper-header">
-            {((
-                parseInt(this.state.currentWeek) +
-                Math.abs
-                (
-                  Math.floor((dayOfWeek[d.getDay()] + this.state.index) / 7)
-                )
-              ) 
-              % 4
-            ) 
-            + 1
-            }
-            {" "}
-            неделя, 
-            {this.state.day}, 
-            {this.state.date} - {this.state.group}
+            {((parseInt(this.state.currentWeek) +
+              Math.abs(
+                Math.floor((dayOfWeek[d.getDay()] + this.state.index) / 7)
+              )) %
+              4) +
+              1}{" "}
+            неделя, {this.state.day}, {this.state.date} - {this.state.group}
           </h5>
           <h1
             className="tab-header"
@@ -391,7 +396,7 @@ class Timetable extends React.Component {
           </h1>
         </div>
         <VirtualizeSwipeableViews
-          overscanSlideBefore={5}
+          overscanSlideBefore={3}
           ignoreNativeScroll={true}
           index={this.state.index}
           onChangeIndex={this.handleChangeIndex}

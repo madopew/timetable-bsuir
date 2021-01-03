@@ -1,25 +1,25 @@
 .exams-timetable {
-    padding-top: 18vh;
-    max-height: 83vh;
-    display: flex;
-    overflow: auto;
-    flex-direction: column;
-    flex-flow: column;
-    align-items: center;
-    -webkit-overflow-scrolling: touch;
+  padding-top: 16vh;
+  max-height: 83vh;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  flex-flow: column;
+  align-items: center;
+  -webkit-overflow-scrolling: touch;
 }
 
 .exams-timetable > *:last-child {
-    margin-bottom: 12vh;
+  margin-bottom: 12vh;
 }
 
 .exams-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    background-color: rgba(0,0,0,0.8);
-    width: 100%;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }

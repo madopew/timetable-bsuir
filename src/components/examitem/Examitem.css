@@ -1,47 +1,64 @@
 .Examitem {
-    width: 85vw;
-    padding: 0.2rem;
-    background: black;
-    margin-top: 1rem;
-    border-radius: 15px;
-    color:white;
+  width: 85vw;
+  padding: 0 0 0 0.4rem;
+  background: black;
+  margin-top: 1rem;
+  border-radius: 4px;
+  position: relative;
 }
 
 .examitem-inner {
-    padding: 0.8rem;
-    background: black;
-    border-radius: inherit;
-}
-
-.examitem-dateandtime {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  padding-left: 0.8rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
 }
 
 .examitem-subject {
-    font-weight: 700;
-    font-size:2.5rem;
+  font-weight: 700;
+  font-size: 2.5rem;
 }
 
 .examitem-fio {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }
 
 .ks {
-    background: rgb(23,234,217);
-    background: linear-gradient(139deg, rgba(23,234,217,1) 0%, rgba(96,120,234,1) 100%);
-    box-shadow: 0px 0px 12px 0px rgba(23,234,216,0.5);
+  background: var(--lk-color);
+  color: var(--lk-color);
 }
 
 .ex {
-    background: rgb(245,78,162);
-    background: linear-gradient(139deg, rgba(255,118,118,1) 0%, rgba(245,78,162,1) 100%);
-    box-shadow: 0px 0px 12px 0px rgba(245,78,161,0.5);
+  background: var(--lc-color);
+  color: var(--lc-color);
 }
 
 .exam-not-active {
-    background: #555 !important;
-    color: #555 !important;
-    box-shadow: none !important;
+  background: #555 !important;
+  color: #555 !important;
+}
+
+.examitem-auditory {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.8rem;
+}
+
+.examitem-date,
+.examitem-time,
+.examitem-auditory,
+.examitem-fio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.examitem-date span,
+.examitem-time span,
+.examitem-auditory span,
+.examitem-fio span {
+  font-size: 1rem;
+  margin-right: 0.2rem;
 }
