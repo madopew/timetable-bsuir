@@ -65,7 +65,7 @@ class Groups extends React.Component {
     }
     let groups = JSON.parse(localStorage.getItem("savedGroups"));
     if (!groups.includes(text)) {
-      if(groups.length === 5)
+      if(groups.length === 10)
         groups.pop();
     } else {
       groups = groups.filter(value => value !== text);

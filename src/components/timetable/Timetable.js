@@ -15,7 +15,7 @@ let days = [
   "среда",
   "четверг",
   "пятница",
-  "суббота"
+  "суббота",
 ];
 let months = [
   "Января",
@@ -29,7 +29,7 @@ let months = [
   "сентября",
   "октября",
   "ноября",
-  "декабря"
+  "декабря",
 ];
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
@@ -42,11 +42,9 @@ let styles = {
     alignItems: "center",
     paddingTop: "18vh",
     paddingBottom: "10vh",
-    WebkitOverflowScrolling: "touch",
-    minHeight: 100,
     overflow: "scroll",
-    zIndex: 100
-  }
+    zIndex: 100,
+  },
 };
 const CancelToken = axios.CancelToken;
 let cancel;
@@ -58,18 +56,22 @@ class Timetable extends React.Component {
     timetable: JSON.parse(localStorage.getItem("timetable")),
     currentWeek: localStorage.getItem("currentWeek") || -1,
     nextWeek: localStorage.getItem("nextWeek") || -1,
+    lastUpdateDate: Date.parse(localStorage.getItem("lastUpdateDate")),
     date: d.getDate() + " " + months[d.getMonth()],
     day: days[d.getDay()],
     index: 0,
+
     modalVisible: null,
     modalHeader: "Header",
     modalText:
       "This is some dummy text for modal window. If you see this probably something went wrong.",
     modalCancellable: true,
-    modalYesText: "Yes",
-    modalNoText: "No",
+    modalHasSecond: true,
+    modalFirstText: "Yes",
+    modalSecondText: "No",
+
     group: localStorage.getItem("group") || "951007",
-    loadingVisible: false
+    loadingVisible: false,
   };
 
   componentWillUnmount() {
@@ -92,7 +94,7 @@ class Timetable extends React.Component {
         );
         this.setState({
           currentWeek: (parseInt(this.state.currentWeek) + 1) % 4,
-          nextWeek: (parseInt(this.state.currentWeek) + 1) % 4
+          nextWeek: (parseInt(this.state.currentWeek) + 1) % 4,
         });
       }
     } else {
@@ -108,7 +110,32 @@ class Timetable extends React.Component {
       }
     }
     if (this.state.timetable === null) {
-      let timetable = {};
+      this.updateTimetable();
+    } else {
+      axios
+        .get(
+          "https://journal.bsuir.by/api/v1/studentGroup/lastUpdateDate?studentGroup=" +
+            this.state.group,
+          {
+            cancelToken: new CancelToken(function executor(c) {
+              cancel = c;
+            }),
+          }
+        )
+        .then(res => {
+          let dates = res.data.lastUpdateDate.split(".");
+          let lastUpdateDate = Date.parse(dates[1] + "/" + dates[0] + "/" + dates[2]);
+          if (lastUpdateDate > this.state.lastUpdateDate) {
+            console.log("Updating timetable");
+            this.setState({timetable: null});
+            this.updateTimetable();
+          }
+        });
+    }
+  }
+
+  updateTimetable = () => {
+    let timetable = {};
       let currentWeek;
       this.setState({ loadingVisible: true });
       console.log("Fetching timetable");
@@ -119,23 +146,23 @@ class Timetable extends React.Component {
           {
             cancelToken: new CancelToken(function executor(c) {
               cancel = c;
-            })
+            }),
           }
         )
-        .then(res => {
+        .then((res) => {
           if (res.data === "") {
             console.log("Error on fetching timetable: Wrong group");
             this.setState({
               modalVisible: true,
-              modalHeader: "Ошибка!",
+              modalHeader: "Похоже такой группы не существует.",
+              modalText: "",
               modalCancellable: false,
-              modalText: "Похоже такой группы не существует.",
-              modalYesText: "Ок",
-              modalNoText: "Update",
-              loadingVisible: false
+              modalHasSecond: false,
+              modalFirstText: "Отмена",
+              loadingVisible: false,
             });
             let groups = JSON.parse(localStorage.getItem("savedGroups"));
-            groups = groups.filter(value => value !== this.state.group);
+            groups = groups.filter((value) => value !== this.state.group);
             localStorage.setItem("savedGroups", JSON.stringify(groups));
             return;
           }
@@ -143,13 +170,12 @@ class Timetable extends React.Component {
             console.log("Error on fetching timetable: No data");
             this.setState({
               modalVisible: true,
-              modalHeader: "Ошибка!",
+              modalHeader: "Невозможно загрузить расписание на данный момент, сервер не отвечает.",
+              modalText: "",
               modalCancellable: false,
-              modalText:
-                "Невозможно загрузить расписание на данный момент, сервер не отвечает.",
-              modalYesText: "Ок",
-              modalNoText: "Update",
-              loadingVisible: false
+              modalHasSecond: false,
+              modalFirstText: "Отмена",
+              loadingVisible: false,
             });
             return;
           }
@@ -177,18 +203,22 @@ class Timetable extends React.Component {
             }
           }
           console.log("Timetable fetched successfully");
+          let lastUpdateDate = new Date();
+          lastUpdateDate.setHours(0, 0, 0, 0);
           this.setState({
             timetable,
             currentWeek,
             displayedWeek: currentWeek,
             nextWeek: currentWeek,
-            loadingVisible: false
+            loadingVisible: false,
+            lastUpdateDate
           });
           localStorage.setItem("timetable", JSON.stringify(timetable));
           localStorage.setItem("currentWeek", currentWeek);
           localStorage.setItem("nextWeek", currentWeek);
+          localStorage.setItem("lastUpdateDate", lastUpdateDate);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Error on fetching timetable:");
           console.log(err);
           if (!axios.isCancel(err)) {
@@ -199,19 +229,18 @@ class Timetable extends React.Component {
               modalText: "При загрузке расписания произошла ошибка.",
               modalYesText: "Ок",
               modalNoText: "Update",
-              loadingVisible: false
+              loadingVisible: false,
             });
           }
         });
-    }
   }
 
-  slideRenderer = params => {
+  slideRenderer = (params) => {
     const { index, key } = params;
 
     if (window.screen.height >= 812) {
-      styles.slide.paddingTop = "16vh";
-      styles.slide.paddingBottom = "15vh";
+      styles.slide.paddingTop = "16.5vh";
+      styles.slide.paddingBottom = "12vh";
     }
 
     if (this.state.timetable === null) {
@@ -240,20 +269,26 @@ class Timetable extends React.Component {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            height: "65vh"
+            height: "65vh",
+            color: "#777777"
           }}
         >
-          <h1>Пар нет :)</h1>
+          <h1
+            style={{
+              marginBottom: ".2rem"
+            }}>Пар нет</h1>
+          <i className="material-icons"
+            style={{
+              fontSize: "2rem"
+            }}>not_interested</i>
         </div>
       );
     else {
       for (let i = 0; i < this.state.timetable[week][day].lessons.length; i++) {
-        let hours = this.state.timetable[week][day].lessons[
-          i
-        ].endLessonTime.split(":")[0];
-        let minutes = this.state.timetable[week][day].lessons[
-          i
-        ].endLessonTime.split(":")[1];
+        let hours = this.state.timetable[week][day].lessons[i]
+          .endLessonTime.split(":")[0];
+        let minutes = this.state.timetable[week][day].lessons[i]
+          .endLessonTime.split(":")[1];
         let timeOfLesson = new Date();
         timeOfLesson.setHours(hours, minutes, 0);
         let type =
@@ -280,17 +315,17 @@ class Timetable extends React.Component {
     );
   };
 
-  handleChangeIndex = index => {
+  handleChangeIndex = (index) => {
     let date = new Date();
     date.setDate(date.getDate() + index);
     this.setState({
       index,
       date: date.getDate() + " " + months[date.getMonth()],
-      day: days[date.getDay()]
+      day: days[date.getDay()],
     });
   };
 
-  modalOnYes = () => {
+  modalOnFirst = () => {
     this.setState({ modalVisible: false });
   };
 
@@ -298,7 +333,7 @@ class Timetable extends React.Component {
     this.setState({
       index: 0,
       date: d.getDate() + " " + months[d.getMonth()],
-      day: days[d.getDay()]
+      day: days[d.getDay()],
     });
   };
 
@@ -321,24 +356,34 @@ class Timetable extends React.Component {
           header={this.state.modalHeader}
           text={this.state.modalText}
           cancellable={this.state.modalCancellable}
-          yesText={this.state.modalYesText}
-          noText={this.state.modalNoText}
-          onYes={this.modalOnYes}
-          onNo={this.modalOnNo}
+          firstText={this.state.modalFirstText}
+          secondText={this.state.modalSecondText}
+          hasSecond={this.state.modalHasSecond}
+          onFirst={this.modalOnFirst}
+          onSecond={this.modalOnSecond}
+          onCancel={this.modalOnCancel}
         />
         <div className="timetable-header">
           <h5 className="tab-upper-header">
-            {((parseInt(this.state.currentWeek) +
-              Math.abs(
-                Math.floor((dayOfWeek[d.getDay()] + this.state.index) / 7)
-              )) %
-              4) +
-              1}{" "}
-            неделя, {this.state.day}, {this.state.date} - {this.state.group}
+            {((
+                parseInt(this.state.currentWeek) +
+                Math.abs
+                (
+                  Math.floor((dayOfWeek[d.getDay()] + this.state.index) / 7)
+                )
+              ) 
+              % 4
+            ) 
+            + 1
+            }
+            {" "}
+            неделя, 
+            {this.state.day}, 
+            {this.state.date} - {this.state.group}
           </h5>
           <h1
             className="tab-header"
-            onClick={e => {
+            onClick={() => {
               this.toStart();
             }}
           >
@@ -346,11 +391,11 @@ class Timetable extends React.Component {
           </h1>
         </div>
         <VirtualizeSwipeableViews
-          overscanSlideBefore={3}
+          overscanSlideBefore={5}
           ignoreNativeScroll={true}
           index={this.state.index}
           onChangeIndex={this.handleChangeIndex}
-          containerStyle={{ maxHeight: "100vh" }}
+          containerStyle={{ height: "100vh" }}
           slideRenderer={this.slideRenderer}
         />
       </div>
